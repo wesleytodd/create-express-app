@@ -1,6 +1,6 @@
 {
   "name": "create-express-app",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Scaffold an express app",
   "author": "Wes Todd <wtodd@netflix.com>",
   "keywords": [
