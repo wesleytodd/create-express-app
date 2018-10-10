@@ -1,0 +1,28 @@
+{
+  "name": "create-express-app",
+  "version": "0.0.0",
+  "description": "Scaffold an express app",
+  "author": "Wes Todd <wtodd@netflix.com>",
+  "keywords": [
+    "express",
+    "scaffold",
+    "generator"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && mocha",
+    "prepublushOnly": "npm t"
+  },
+  "dependencies": {
+    "commander": "^2.19.0",
+    "create-package-json": "0.0.4",
+    "ejs": "^2.6.1",
+    "inquirer": "^6.2.0",
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "standard": "^12.0.1"
+  }
+}

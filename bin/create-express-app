@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+'use strict'
+// vim: set ft=javascript:ts=2:sw=2
+const program = require('commander')
+const pkg = require('../package.json')
+const createExpressApp = require('../')
+
+let directory
+
+program
+  .version(pkg.version)
+  .arguments('<directory>')
+  .action((dir) => directory = dir)
+  .option('--extended', 'Show extended option prompts (ex. browser, engines, etc)')
+  .option('--name [name]', 'The package name')
+  .parse(process.argv)
+
+// Run the process
+createExpressApp({
+  directory: directory,
+  extended: program.extended,
+  // check if string because there is a .name getter function, same with description
+  name: typeof program.name === 'string' ? program.name : undefined
+})
