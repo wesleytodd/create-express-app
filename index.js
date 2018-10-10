@@ -1,26 +1,26 @@
 'use strict'
 const path = require('path')
-const fs = require('fs')
 const createPackageJson = require('create-package-json')
 const prompt = require('./lib/prompts')
 const cptmpl = require('./lib/cptmpl')
 
-module.exports = async function createExpressApp (input = {}) {
+module.exports = async function createExpressApp (options = {}) {
   // We need this for the defaults
   const cwd = process.cwd()
 
-  // Removed undefined values from input and default some options
-  const options = Object.keys(input).reduce((o, key) => {
-    if (typeof input[key] !== 'undefined') {
-      o[key] = input[key]
+  // Removed undefined input values
+  const input = Object.keys(options).reduce((o, key) => {
+    if (typeof options[key] !== 'undefined') {
+      o[key] = options[key]
     }
     return o
-  }, {
-    extended: false
-  })
+  }, {})
 
-  // Defaults for 
-  let opts = {
+  // Defaults
+  let opts = Object.assign({
+    noPrompt: false,
+    extended: false,
+    silent: false,
     name: 'app',
     directory: cwd,
     templatesDir: path.join(__dirname, 'templates'),
@@ -33,10 +33,10 @@ module.exports = async function createExpressApp (input = {}) {
       start: './bin/app',
       prepublishOnly: ''
     }
-  }
+  }, input)
 
   // prompt input
-  opts = await prompt(opts, options)
+  opts = await prompt(opts, input)
 
   // add to deps
   opts.dependencies.push('express')

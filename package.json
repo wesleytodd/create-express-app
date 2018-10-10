@@ -12,12 +12,15 @@
   "main": "index.js",
   "scripts": {
     "test": "standard && mocha",
-    "prepublushOnly": "npm t"
+    "prepublushOnly": "npm t",
+    "postpublish": "git push && git push --tags"
   },
   "dependencies": {
     "commander": "^2.19.0",
+    "cptmpl": "0.0.1",
     "create-package-json": "0.0.4",
     "ejs": "^2.6.1",
+    "fs-extra": "^7.0.0",
     "inquirer": "^6.2.0",
     "mkdirp": "^0.5.1"
   },
