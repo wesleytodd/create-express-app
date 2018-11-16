@@ -1,6 +1,11 @@
 'use strict'
 const express = require('express')
-<%- bodyParser ? `const bodyParser = require('body-parser')\n` : '' %>
+const httpErrors = require('http-errors')
+<%- appType === 'web-app' ? `const path = require('path')\n` : '' -%>
+<%- consolidate ? `const consolidate = require('consolidate')` : `const ejs = require('ejs')` %>
+<%- bodyParser ? `const bodyParser = require('body-parser')\n` : '' -%>
+<%- cookieParser ? `const cookieParser = require('cookie-parser')\n` : '' -%>
+
 module.exports = function main (options, cb) {
   // Set default options
   const ready = cb || function () {}
@@ -37,9 +42,23 @@ module.exports = function main (options, cb) {
   // Create the express app
   const app = express()
 
+  // Template engine
+  // NOTE: this is not a production ready view engine. Replace with
+  // a view engine of your choice.  See http://expressjs.com/en/resources/template-engines.html
+  <%_ if (appType === 'web-app') { _%>
+  app.engine('html', <%- consolidate ? `consolidate.ejs` : `ejs.renderFile` %>)
+  app.set('views', path.join(__dirname, 'views'))
+  app.set('view engine', 'html')
+  <% } -%>
+
   // Common middleware
   // app.use(/* ... */)
-  <%- bodyParser ? `app.use(bodyParser.json())\n` : '' %>
+  <%- bodyParser ? `// app.use(bodyParser.json())
+  // app.use(bodyParser.text())
+  // app.use(bodyParser.raw())
+  // app.use(bodyParser.urlencoded())\n` : '' -%>
+  <%- (cookieParser ? `app.use(cookieParser(/* secret */))\n` : '') -%>
+
   // Register routes
   // @NOTE: require here because this ensures that even syntax errors
   // or other startup related errors are caught logged and debuggable.
@@ -49,25 +68,30 @@ module.exports = function main (options, cb) {
   require('./routes')(app, opts)
 
   // Common error handlers
-  app.use(function fourOhFourHandler (req, res) {
-    res.status(404).json({
-      messages: [{
-        code: 'NotFound',
-        message: `Route not found: ${req.url}`,
-        level: 'warning'
-      }]
-    })
+  app.use(function fourOhFourHandler (req, res, next) {
+    next(httpErrors(404, `Route not found: ${req.url}`))
   })
+  <%_ if (appType === 'json-api') { _%>
   app.use(function fiveHundredHandler (err, req, res, next) {
-    console.error(err)
-    res.status(500).json({
+    if (err.status >= 500) {
+      console.error(err)
+    }
+    res.status(err.status || 500).json({
       messages: [{
         code: err.code || 'InternalServerError',
-        message: err.message,
-        level: 'error'
+        message: err.message
       }]
     })
   })
+  <%_ } else if (appType === 'web-app') { _%>
+  app.use(function fiveHundredHandler (err, req, res, next) {
+    if (err.status >= 500) {
+      console.error(err)
+    }
+    res.locals.error = err
+    res.status(err.status || 500).render('error')
+  })
+  <% } -%>
 
   // Start server
   server = app.listen(opts.port, opts.host, function (err) {

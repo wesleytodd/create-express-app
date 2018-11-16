@@ -2,7 +2,7 @@
 const path = require('path')
 const createPackageJson = require('create-package-json')
 const prompt = require('./lib/prompts')
-const cptmpl = require('./lib/cptmpl')
+const cptmpl = require('cptmpl')
 
 module.exports = async function createExpressApp (options = {}) {
   // We need this for the defaults
@@ -21,17 +21,21 @@ module.exports = async function createExpressApp (options = {}) {
     noPrompt: false,
     extended: false,
     silent: false,
-    name: 'app',
+    name: path.basename(input.directory || cwd),
     directory: cwd,
-    templatesDir: path.join(__dirname, 'templates'),
-    appType: 'JSON API',
-    bodyParser: true,
+    appType: 'bare',
+    bodyParser: false,
+    consolidate: false,
+    cookieParser: false,
     dependencies: [],
     devDependencies: [],
     main: 'index.js',
     scripts: {
-      start: './bin/app',
-      prepublishOnly: ''
+      start: '',
+      prepublishOnly: '',
+      prepare: '',
+      postpublish: '',
+      preversion: ''
     }
   }, input)
 
@@ -40,18 +44,39 @@ module.exports = async function createExpressApp (options = {}) {
 
   // add to deps
   opts.dependencies.push('express')
+  opts.dependencies.push('http-errors')
   opts.bodyParser && opts.dependencies.push('body-parser')
+  opts.consolidate && opts.dependencies.push('consolidate')
+  ;((opts.appType === 'web-app') || opts.consolidate) && opts.dependencies.push('ejs')
+  opts.cookieParser && opts.dependencies.push('cookie-parser')
 
-  if (opts.name !== 'app') {
-    opts.scripts.start = './bin/' + opts.name
+  // start script
+  opts.scripts.start = opts.scripts.start || './bin/' + opts.name
+
+  // Copy templates
+  switch (opts.appType) {
+    case 'bare':
+    case 'json-api':
+    case 'web-app':
+      opts.template = opts.template || path.join(__dirname, 'templates', opts.appType)
+      break
+    default:
+      opts.template = opts.template || path.join(__dirname, 'templates', 'bare')
   }
+  await cptmpl.recursive(opts.template, opts.directory, opts, {
+    processTemplateFilenames: opts.processTemplateFilenames
+  })
 
-  await createPackageJson(opts)
-
-  // Write files
-  await cptmpl(opts, 'index.js.tmpl', 'index.js')
-  await cptmpl(opts, 'routes.js.tmpl', 'routes.js')
-  await cptmpl(opts, 'handlers-simple.js.tmpl', 'handlers/simple.js')
-  await cptmpl(opts, 'handlers-configured.js.tmpl', 'handlers/configured.js')
-  await cptmpl(opts, 'bin-app.tmpl', 'bin/' + opts.name, 0o775)
+  // create the package json
+  await createPackageJson({
+    name: opts.name,
+    noPrompt: opts.noPrompt,
+    extended: opts.extended,
+    silent: opts.silent,
+    directory: opts.directory,
+    scripts: opts.scripts,
+    main: opts.main,
+    dependencies: opts.dependencies,
+    devDependencies: opts.devDependencies
+  })
 }
