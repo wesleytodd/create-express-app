@@ -73,6 +73,9 @@ module.exports = async function createExpressApp (options = {}) {
   await createPackageJson({
     name: opts.name,
     scope: opts.scope,
+    version: opts.version,
+    license: opts.license,
+    scripts: opts.scripts,
     noPrompt: opts.noPrompt,
     extended: opts.extended,
     silent: opts.silent,
