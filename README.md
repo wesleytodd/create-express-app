@@ -2,8 +2,6 @@
 
 Scaffold out an [Express app](https://www.npmjs.com/package/express) application.
 
-*NOTE:* This is a work in progress, more to come on docs and there are some missing options at the moment.
-
 ## Usage
 
 ```
@@ -23,14 +21,21 @@ $ create-express-app
 ```
 $ create-express-app --help
 
-  Usage: create-express-app [options] <directory>
+Usage: create-express-app [options] <directory>
 
-  Options:
-
-    -V, --version                      output the version number
-    --no-prompt                        skip prompts and just use input options
-    --name [name]                      the package name
-    -h, --help                         output usage information
+Options:
+  -V, --version                      output the version number
+  --extended                         Show extended option prompts (ex. browser, engines, etc)
+  --no-prompt                        Skip prompts and just use input options
+  --name [name]                      The package name
+  --app-type [type]                  The app type, determines template and defaults
+  --body-parser                      Install and use the body-parser package
+  --consolidate                      Install and use the consolidate package
+  --cookie-parser                    Install and use the cookie-parser package
+  --dependencies [dependencies]      Package dependencies
+  --dev-dependencies [dependencies]  Package dev dependencies
+  --main [main]                      The app main entry script
+  -h, --help                         output usage information
 ```
 
 ### Programmatic Usage
@@ -41,7 +46,18 @@ const createExpressApp = require('create-express-app')
 (async () => {
   // Will create an express app in the current directoy
   await createExpressApp({
+    noPrompt: false,
+    extended: false,
+    silent: false,
     name: 'my-app'
+    directory: process.cwd(),
+    appType: 'bare',
+    bodyParser: false,
+    consolidate: false,
+    cookieParser: false,
+    dependencies: [],
+    devDependencies: [],
+    main: 'index.js'
   })
 })()
 ```

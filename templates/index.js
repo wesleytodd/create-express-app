@@ -20,8 +20,8 @@ module.exports = function main (options, cb) {
 
   // Setup error handling
   function unhandledError (err) {
-	  // Log the errors
-	  console.error(err)
+    // Log the errors
+    console.error(err)
 
     // Only clean up once
     if (serverClosing) {

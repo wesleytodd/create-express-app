@@ -2,7 +2,7 @@
   "name": "create-express-app",
   "version": "0.0.3",
   "description": "Scaffold an express app",
-  "author": "Wes Todd <wtodd@netflix.com>",
+  "author": "Wes Todd <wes@wesleytodd.com>",
   "bin": {
     "create-express-app": "./bin/create-express-app"
   },
@@ -14,8 +14,6 @@
   "license": "ISC",
   "main": "index.js",
   "scripts": {
-    "start": "./bin/test-app",
-    "prepublishOnly": "",
     "test": "standard && mocha",
     "prepublushOnly": "npm t",
     "postpublish": "git push && git push --tags"
@@ -26,15 +24,15 @@
     ]
   },
   "dependencies": {
+    "comma-separated-tokens": "^1.0.6",
     "commander": "^2.19.0",
     "cptmpl": "0.0.4",
     "create-package-json": "0.0.5",
     "ejs": "^2.6.1",
-    "fs-extra": "^7.0.0",
-    "inquirer": "^6.2.0",
-    "mkdirp": "^0.5.1"
+    "inquirer": "^6.2.0"
   },
   "devDependencies": {
+    "fs-extra": "^7.0.1",
     "mocha": "^5.2.0",
     "standard": "^12.0.1"
   },
