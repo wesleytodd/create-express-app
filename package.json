@@ -27,7 +27,7 @@
     "comma-separated-tokens": "^1.0.6",
     "commander": "^2.19.0",
     "cptmpl": "0.0.4",
-    "create-package-json": "0.0.5",
+    "create-package-json": "0.0.6",
     "ejs": "^2.6.1",
     "inquirer": "^6.2.0"
   },

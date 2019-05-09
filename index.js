@@ -21,6 +21,7 @@ module.exports = async function createExpressApp (options = {}) {
     noPrompt: false,
     extended: false,
     silent: false,
+    force: false,
     name: path.basename(input.directory || cwd),
     directory: cwd,
     appType: 'bare',
@@ -64,12 +65,14 @@ module.exports = async function createExpressApp (options = {}) {
       opts.template = opts.template || path.join(__dirname, 'templates', 'bare')
   }
   await cptmpl.recursive(opts.template, opts.directory, opts, {
+    force: opts.force,
     processTemplateFilenames: opts.processTemplateFilenames
   })
 
   // create the package json
   await createPackageJson({
     name: opts.name,
+    scope: opts.scope,
     noPrompt: opts.noPrompt,
     extended: opts.extended,
     silent: opts.silent,

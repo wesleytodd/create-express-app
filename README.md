@@ -26,6 +26,7 @@ Usage: create-express-app [options] <directory>
 Options:
   -V, --version                      output the version number
   --extended                         Show extended option prompts (ex. browser, engines, etc)
+  --force                            Force overwrite files
   --no-prompt                        Skip prompts and just use input options
   --name [name]                      The package name
   --app-type [type]                  The app type, determines template and defaults

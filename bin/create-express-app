@@ -14,6 +14,7 @@ program
   .action((dir) => directory = dir)
   .option('--extended', 'Show extended option prompts (ex. browser, engines, etc)')
   .option('--no-prompt', 'Skip prompts and just use input options')
+  .option('--force', 'Force overwrite files')
   .option('--name [name]', 'The package name')
   .option('--app-type [type]', 'The app type, determines template and defaults')
   .option('--body-parser', 'Install and use the body-parser package')
@@ -36,6 +37,7 @@ createExpressApp({
   directory: directory,
   extended: program.extended,
   noPrompt: program.noPrompt,
+  force: program.force,
   // check if string because there is a .name getter function, same with description
   name: typeof program.name === 'string' ? program.name : undefined,
   appType: program.appType,
