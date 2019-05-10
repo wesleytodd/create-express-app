@@ -20,6 +20,7 @@ program
   .option('--body-parser', 'Install and use the body-parser package')
   .option('--consolidate', 'Install and use the consolidate package')
   .option('--cookie-parser', 'Install and use the cookie-parser package')
+  .option('--serve-static', 'Install and use the serve-static package')
   .option('--dependencies [dependencies]', 'Package dependencies')
   .option('--dev-dependencies [dependencies]', 'Package dev dependencies')
   .option('--main [main]', 'The app main entry script')
@@ -44,6 +45,7 @@ createExpressApp({
   bodyParser: program.bodyParser,
   consolidate: program.consolidate,
   cookieParser: program.cookieParser,
+  serveStatic: program.serveStatic,
   dependencies: program.dependencies,
   devDependencies: program.devDependencies,
   main: program.main

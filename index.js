@@ -3,6 +3,7 @@ const path = require('path')
 const createPackageJson = require('create-package-json')
 const prompt = require('./lib/prompts')
 const cptmpl = require('cptmpl')
+const fs = require('fs-extra')
 
 module.exports = async function createExpressApp (options = {}) {
   // We need this for the defaults
@@ -28,11 +29,13 @@ module.exports = async function createExpressApp (options = {}) {
     bodyParser: false,
     consolidate: false,
     cookieParser: false,
+    serveStatic: false,
+    viewEngine: 'ejs',
     dependencies: [],
     devDependencies: [],
     main: 'index.js',
     scripts: {
-      start: '',
+      start: './bin/app',
       prepublishOnly: '',
       prepare: '',
       postpublish: '',
@@ -48,11 +51,9 @@ module.exports = async function createExpressApp (options = {}) {
   opts.dependencies.push('http-errors')
   opts.bodyParser && opts.dependencies.push('body-parser')
   opts.consolidate && opts.dependencies.push('consolidate')
-  ;((opts.appType === 'web-app') || opts.consolidate) && opts.dependencies.push('ejs')
+  ;((opts.appType === 'web-app') || opts.consolidate) && opts.dependencies.push(opts.viewEngine)
   opts.cookieParser && opts.dependencies.push('cookie-parser')
-
-  // start script
-  opts.scripts.start = opts.scripts.start || './bin/' + opts.name
+  opts.serveStatic && opts.dependencies.push('serve-static')
 
   // Copy templates
   switch (opts.appType) {
@@ -68,6 +69,26 @@ module.exports = async function createExpressApp (options = {}) {
     force: opts.force,
     processTemplateFilenames: opts.processTemplateFilenames
   })
+
+  // Copy web app templates
+  if (opts.appType === 'web-app') {
+    switch (opts.viewEngine) {
+      case 'ejs':
+      case 'pug':
+        await cptmpl.recursive(path.join(__dirname, 'templates', 'views', opts.viewEngine), path.join(opts.directory, 'views'), opts, {
+          force: opts.force,
+          processTemplateFilenames: opts.processTemplateFilenames
+        })
+        break
+    }
+  }
+
+  if (opts.serveStatic) {
+    await fs.ensureDir(path.join(opts.directory, 'public'))
+    await fs.copy(path.join(__dirname, 'templates', 'express-favicon.png'), path.join(opts.directory, 'public', 'favicon.png'), {
+      overwrite: opts.force
+    })
+  }
 
   // create the package json
   await createPackageJson({

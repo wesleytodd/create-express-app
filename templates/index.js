@@ -2,9 +2,10 @@
 const express = require('express')
 const httpErrors = require('http-errors')
 <%- appType === 'web-app' ? `const path = require('path')\n` : '' -%>
-<%- consolidate ? `const consolidate = require('consolidate')` : `const ejs = require('ejs')` %>
+<%- consolidate ? `const consolidate = require('consolidate')` : `const ${viewEngine} = require('${viewEngine}')` %>
 <%- bodyParser ? `const bodyParser = require('body-parser')\n` : '' -%>
 <%- cookieParser ? `const cookieParser = require('cookie-parser')\n` : '' -%>
+<%- serveStatic ? `const serveStatic = require('serve-static')\n` : '' -%>
 
 module.exports = function main (options, cb) {
   // Set default options
@@ -46,18 +47,19 @@ module.exports = function main (options, cb) {
   // NOTE: this is not a production ready view engine. Replace with
   // a view engine of your choice.  See http://expressjs.com/en/resources/template-engines.html
   <%_ if (appType === 'web-app') { _%>
-  app.engine('html', <%- consolidate ? `consolidate.ejs` : `ejs.renderFile` %>)
+  app.engine('html', <%- consolidate ? `consolidate.${viewEngine}` : `${viewEngine}.renderFile` %>)
   app.set('views', path.join(__dirname, 'views'))
   app.set('view engine', 'html')
   <% } -%>
 
   // Common middleware
   // app.use(/* ... */)
-  <%- bodyParser ? `// app.use(bodyParser.json())
+  <%_ bodyParser ? `// app.use(bodyParser.json())
   // app.use(bodyParser.text())
   // app.use(bodyParser.raw())
   // app.use(bodyParser.urlencoded())\n` : '' -%>
   <%- (cookieParser ? `app.use(cookieParser(/* secret */))\n` : '') -%>
+  <%- (serveStatic ? `app.use('/public', serveStatic('public'))\n` : '') -%>
 
   // Register routes
   // @NOTE: require here because this ensures that even syntax errors
@@ -88,6 +90,7 @@ module.exports = function main (options, cb) {
     if (err.status >= 500) {
       console.error(err)
     }
+    res.locals.name = '<%- name %>'
     res.locals.error = err
     res.status(err.status || 500).render('error')
   })
