@@ -36,6 +36,7 @@ Options:
   --consolidate                      Install and use the consolidate package
   --cookie-parser                    Install and use the cookie-parser package
   --serve-static                     Install and use the serve-static package
+  --pino                             Install and use the pino for loggin (pino, pino-http, pino-pretty)
   --dependencies [dependencies]      Package dependencies
   --dev-dependencies [dependencies]  Package dev dependencies
   --main [main]                      The app main entry script
@@ -61,6 +62,7 @@ const createExpressApp = require('create-express-app')
     consolidate: false,
     cookieParser: false,
     serveStatic: false,
+    pino: true,
     dependencies: [],
     devDependencies: [],
     main: 'index.js'

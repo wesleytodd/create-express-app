@@ -30,6 +30,7 @@ module.exports = async function createExpressApp (options = {}) {
     consolidate: false,
     cookieParser: false,
     serveStatic: false,
+    pino: true,
     viewEngine: 'ejs',
     dependencies: [],
     devDependencies: [],
@@ -47,13 +48,16 @@ module.exports = async function createExpressApp (options = {}) {
   opts = await prompt(opts, input)
 
   // add to deps
-  opts.dependencies.push('express')
-  opts.dependencies.push('http-errors')
+  opts.dependencies.push('express', 'http-errors')
   opts.bodyParser && opts.dependencies.push('body-parser')
   opts.consolidate && opts.dependencies.push('consolidate')
   ;((opts.appType === 'web-app') || opts.consolidate) && opts.dependencies.push(opts.viewEngine)
   opts.cookieParser && opts.dependencies.push('cookie-parser')
   opts.serveStatic && opts.dependencies.push('serve-static')
+  opts.pino && opts.dependencies.push('pino', 'pino-http', 'pino-pretty')
+
+  // If using pino, use pretty pino for cli output
+  ;(opts.pino && (input.scripts && !input.scripts.start)) && (opts.scripts.start = './bin/app | pino-pretty')
 
   // Copy templates
   switch (opts.appType) {
