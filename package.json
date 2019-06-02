@@ -27,6 +27,7 @@
     "comma-separated-tokens": "^1.0.6",
     "commander": "^2.19.0",
     "cptmpl": "0.0.4",
+    "create-git": "0.0.2",
     "create-package-json": "0.0.7",
     "ejs": "^2.6.1",
     "fs-extra": "^7.0.1",

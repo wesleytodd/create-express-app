@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const createPackageJson = require('create-package-json')
+const createGit = require('create-git')
 const prompt = require('./lib/prompts')
 const cptmpl = require('cptmpl')
 const fs = require('fs-extra')
@@ -41,7 +42,8 @@ module.exports = async function createExpressApp (options = {}) {
       prepare: '',
       postpublish: '',
       preversion: ''
-    }
+    },
+    git: true
   }, input)
 
   // prompt input
@@ -95,18 +97,28 @@ module.exports = async function createExpressApp (options = {}) {
   }
 
   // create the package json
-  await createPackageJson({
-    name: opts.name,
-    scope: opts.scope,
-    version: opts.version,
-    license: opts.license,
+  const pkg = await createPackageJson({
     noPrompt: opts.noPrompt,
     extended: opts.extended,
     silent: opts.silent,
     directory: opts.directory,
+    name: opts.name,
+    scope: opts.scope,
+    version: opts.version,
+    license: opts.license,
     scripts: opts.scripts,
     main: opts.main,
     dependencies: opts.dependencies,
     devDependencies: opts.devDependencies
   })
+
+  if (opts.git) {
+    await createGit({
+      directory: opts.directory,
+      noPrompt: opts.noPrompt,
+      silent: opts.silent,
+      ignoreTemplates: ['Node.gitignore'],
+      remoteOrigin: pkg.repository && pkg.repository.url
+    })
+  }
 }
