@@ -40,6 +40,9 @@ Options:
   --dependencies [dependencies]      Package dependencies
   --dev-dependencies [dependencies]  Package dev dependencies
   --main [main]                      The app main entry script
+  --git                              Use git (init repo and .gitignore)
+  --initial-commit-message           Git initial commit message
+  --ignore-templates                 Git ignore templates
   -h, --help                         output usage information
 ```
 
@@ -63,9 +66,14 @@ const createExpressApp = require('create-express-app')
     cookieParser: false,
     serveStatic: false,
     pino: true,
+    // See: https://github.com/wesleytodd/create-package-json
     dependencies: [],
     devDependencies: [],
-    main: 'index.js'
+    main: 'index.js',
+    // See: https://github.com/wesleytodd/create-git
+    git: true,
+    initialCommitMessage: '',
+    ignoreTemplates: ['Node.gitignore']
   })
 })()
 ```

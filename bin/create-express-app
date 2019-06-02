@@ -24,6 +24,9 @@ program
   .option('--dependencies [dependencies]', 'Package dependencies')
   .option('--dev-dependencies [dependencies]', 'Package dev dependencies')
   .option('--main [main]', 'The app main entry script')
+  .option('--git', 'Use git (init repo and .gitignore)')
+  .option('--initial-commit-message', 'Git initial commit message')
+  .option('--ignore-templates', 'Git ignrore templates')
   .parse(process.argv)
 
 if (program.dependencies) {
